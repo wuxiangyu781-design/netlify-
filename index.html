@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高中物理全解 | 终极完全体</title>
+    <style>
+        /* ===== 全局变量 ===== */
+        :root {
+            --primary-blue: #0056b3;
+            --accent-red: #d63031;
+            --bg-gray: #f4f6f8;
+            --text-dark: #2d3436;
+            --sidebar-width: 260px;
+            --font-main: "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            --font-math: "Times New Roman", serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ===== 侧边栏 (多级导航) ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #ffffff;
+            border-right: 1px solid #dfe6e9;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.03);
+            z-index: 10;
+        }
+
+        .brand-header {
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            color: white;
+        }
+        .brand-header h2 { font-size: 1.2rem; margin-bottom: 5px; }
+        .brand-header p { font-size: 0.8rem; opacity: 0.9; }
+
+        .nav-group { padding-top: 10px; }
+
+        .nav-header {
+            padding: 12px 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #b2bec3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #f1f1f1;
+            background: #fafafa;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            font-size: 0.95rem;
+            color: #636e72;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background-color: #f1f8ff;
+            color: var(--primary-blue);
+        }
+
+        .nav-item.active {
+            background-color: #e3f2fd;
+            color: var(--primary-blue);
+            border-left-color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        /* ===== 主内容区 ===== */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 40px;
+            scroll-behavior: smooth;
+        }
+
+        .content-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            min-height: 90vh;
+            display: none; /* 默认隐藏 */
+            animation: fadeIn 0.4s ease;
+        }
+        .content-card.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== 排版细节 ===== */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            border-bottom: 3px solid var(--primary-blue);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #2d3436;
+            margin: 40px 0 20px;
+            padding-left: 15px;
+            border-left: 5px solid var(--accent-red);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #0984e3;
+            margin: 25px 0 15px;
+            font-weight: bold;
+        }
+
+        p { line-height: 1.8; margin-bottom: 15px; text-align: justify; }
+
+        /* 公式容器 */
+        .formula-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .math {
+            font-family: var(--font-math);
+            font-size: 1.4rem;
+            font-style: italic;
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+        .math-desc {
+            font-size: 0.9rem;
+            color: #636e72;
+            margin-top: 5px;
+            font-family: var(--font-main);
+            font-style: normal;
+        }
+
+        /* 推导过程框 */
+        .derivation {
+            background-color: #fffbf0;
+            border: 1px dashed #fdcb6e;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #2d3436;
+        }
+        .derivation strong { color: #d35400; display: block; margin-bottom: 10px; }
+
+        /* SVG 图示容器 */
+        .diagram-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        .diagram-caption {
+            margin-top: 10px;
+            color: #636e72;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* 重点标记 */
+        .highlight { color: var(--accent-red); font-weight: bold; }
+
+        /* B站按钮 */
+        .bili-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 8px 16px;
+            background: #f4f4f4;
+            color: #fb7299;
+            border: 1px solid #fb7299;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .bili-link:hover { background: #fb7299; color: white; }
+
+        /* 响应式 */
+        @media(max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; height: auto; max-height: 200px; }
+            .content-card { padding: 20px; min-height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 侧边栏：多级详细分类 -->
+<nav class="sidebar">
+    <div class="brand-header">
+        <h2>高中物理全解</h2>
+        <p>Pro Version | 终极完全体</p>
+    </div>
+
+    <!-- 必修一 -->
+    <div class="nav-header">一、运动学 (必修1)</div>
+    <div class="nav-group">
+        <a class="nav-item active" data-target="kinematics-1">匀变速直线运动</a>
+        <a class="nav-item" data-target="kinematics-2">自由落体 & 竖直上抛</a>
+    </div>
+
+    <div class="nav-header">二、力与牛顿 (必修1)</div>
+    <div class="nav-group">
+        <a class="nav-item" data-target="forces">三种常见力</a>
+        <a class="nav-item" data-target="newton">牛顿运动定律</a>
+    </div>
+
+    <!-- 必修二 -->
+    <div class="nav-header">三、曲线与天体 (必修2)</div>
+    <div class="nav-group">
+        <a class="nav-item" data-target="projectile">平抛与圆周运动</a>
+        <a class="nav-item" data-target="gravity">万有引力与航天</a>
+    </div>
+
+    <div class="nav-header">四、能量与动量 (必修2/选修)</div>
+    <div class="nav-group">
+        <a class="nav-item" data-target="work-energy">功与机械能</a>
+        <a class="nav-item" data-target="momentum">动量守恒定律</a>
+    </div>
+
+    <!-- 选修 3-1 -->
+    <div class="nav-header">五、电磁学 (3-1)</div>
+    <div class="nav-group">
+        <a class="nav-item" data-target="electric-field">静电场</a>
+        <a class="nav-item" data-target="circuits">恒定电流</a>
+        <a class="nav-item" data-target="magnetism">磁场与洛伦兹力</a>
+    </div>
+
+    <!-- 选修 3-2 -->
+    <div class="nav-header">六、电磁感应 (3-2)</div>
+    <div class="nav-group">
+        <a class="nav-item" data-target="induction">电磁感应定律</a>
+        <a class="nav-item" data-target="ac">交变电流</a>
+    </div>
+
+    <!-- 选修 3-3/3-4/3-5 -->
+    <div class="nav-header">七、近代物理与热学</div>
+    <div class="nav-group">
+        <a class="nav-item" data-target="thermo">热学 (3-3)</a>
+        <a class="nav-item" data-target="optics">光学与波 (3-4)</a>
+        <a class="nav-item" data-target="atom">原子物理 (3-5)</a>
+    </div>
+</nav>
+
+<!-- 主内容区 -->
+<main class="main-content">
+
+    <!-- 1.1 匀变速直线运动 (保持完美状态) -->
+    <section id="kinematics-1" class="content-card active">
+        <h1>匀变速直线运动</h1>
+        <h2>核心公式体系</h2>
+        <div class="formula-box">
+            <div class="math">v = v<sub>0</sub> + at</div>
+            <div class="math">x = v<sub>0</sub>t + &frac12;at<sup>2</sup></div>
+            <div class="math">v<sup>2</sup> - v<sub>0</sub><sup>2</sup> = 2ax</div>
+        </div>
+        <div class="derivation">
+            <strong>💡 深度推导：位移公式是怎么来的？</strong>
+            <p>利用 v-t 图像的“面积法”推导：</p>
+            <p>1. 梯形面积公式 S = (上底 + 下底) &times; 高 / 2</p>
+            <p>2. 对应到 v-t 图：x = (v<sub>0</sub> + v) &times; t / 2</p>
+            <p>3. 将 v = v<sub>0</sub> + at 代入上式：</p>
+            <p>x = (v<sub>0</sub> + v<sub>0</sub> + at) &times; t / 2 = v<sub>0</sub>t + &frac12;at<sup>2</sup></p>
+        </div>
+        <div class="diagram-box">
+            <svg width="400" height="250" viewBox="0 0 400 250">
+                <line x1="40" y1="220" x2="380" y2="220" stroke="#333" stroke-width="2"/>
+                <line x1="40" y1="220" x2="40" y2="20" stroke="#333" stroke-width="2"/>
+                <text x="370" y="240" font-size="14">t</text>
+                <text x="20" y="30" font-size="14">v</text>
+                <text x="25" y="235" font-size="14">O</text>
+                <line x1="40" y1="150" x2="300" y2="50" stroke="#0984e3" stroke-width="3"/>
+                <circle cx="40" cy="150" r="4" fill="#d63031"/>
+                <text x="15" y="155" font-size="14">v₀</text>
+                <line x1="300" y1="50" x2="300" y2="220" stroke="#b2bec3" stroke-dasharray="5,5"/>
+                <text x="295" y="240" font-size="14">t₁</text>
+                <path d="M 40 220 L 40 150 L 300 50 L 300 220 Z" fill="rgba(9, 132, 227, 0.1)"/>
+                <text x="100" y="190" fill="#0984e3" font-size="14">阴影面积 = 位移 x</text>
+            </svg>
+            <div class="diagram-caption">图1：匀加速直线运动 v-t 图像解析</div>
+        </div>
+    </section>
+
+    <!-- 1.2 自由落体 -->
+    <section id="kinematics-2" class="content-card">
+        <h1>自由落体与竖直上抛</h1>
+        <div class="formula-box">
+            <div class="math">h = &frac12;gt<sup>2</sup></div>
+            <div class="math">v<sup>2</sup> = 2gh</div>
+        </div>
+        <div class="derivation">
+            <strong>💡 对称性原理：</strong>
+            <p>竖直上抛是匀减速运动。上升时间等于下降时间 ($t = v_0/g$)，回到原点时速度大小不变，方向相反。</p>
+        </div>
+    </section>
+
+    <!-- 2.1 常见力 -->
+    <section id="forces" class="content-card">
+        <h1>三种常见力</h1>
+        <h2>摩擦力</h2>
+        <div class="formula-box">
+            <div class="math">f = &mu;F<sub>N</sub></div>
+        </div>
+        <div class="derivation">
+            <strong>⚠️ 严重误区：</strong>
+            <p>F<sub>N</sub> 不一定等于 mg！在斜面上 F<sub>N</sub> = mg cos&theta;。</p>
+        </div>
+    </section>
+
+    <!-- 2.2 牛顿定律 -->
+    <section id="newton" class="content-card">
+        <h1>牛顿运动定律</h1>
+        <div class="formula-box">
+            <div class="math">F<sub>合</sub> = ma</div>
+        </div>
+        <div class="diagram-box">
+            <svg width="300" height="200" viewBox="0 0 300 200">
+                <rect x="100" y="100" width="100" height="60" fill="#dfe6e9" stroke="#2d3436" stroke-width="2"/>
+                <line x1="200" y1="130" x2="280" y2="130" stroke="#0984e3" stroke-width="3" marker-end="url(#arrow)"/>
+                <text x="220" y="120" fill="#0984e3">F (合力)</text>
+                <line x1="150" y1="130" x2="250" y2="130" stroke="#d63031" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="150" y="180" fill="#d63031">a (与F同向)</text>
+            </svg>
+            <div class="diagram-caption">图2：矢量同向性示意图</div>
+        </div>
+    </section>
+
+    <!-- 3.1 平抛与圆周 -->
+    <section id="projectile" class="content-card">
+        <h1>平抛运动 & 圆周运动</h1>
+        <div class="formula-box">
+            <div class="math">v<sub>合</sub> = &radic;(v<sub>0</sub><sup>2</sup> + (gt)<sup>2</sup>)</div>
+            <div class="math">F<sub>n</sub> = m v<sup>2</sup>/r</div>
+        </div>
+    </section>
+
+    <!-- 3.2 万有引力 -->
+    <section id="gravity" class="content-card">
+        <h1>万有引力与航天</h1>
+        <div class="formula-box">
+            <div class="math">F = G Mm / r<sup>2</sup></div>
+        </div>
+        <div class="derivation">
+            <strong>💡 第一宇宙速度推导：</strong>
+            <p>让万有引力完全提供向心力，且贴近表面 (r &approx; R)：</p>
+            <p>G Mm / R<sup>2</sup> = m v<sup>2</sup> / R</p>
+            <p>解得：v = &radic;(GM / R) &approx; 7.9 km/s</p>
+        </div>
+    </section>
+
+    <!-- 4.1 功与机械能 (新增详细图文) -->
+    <section id="work-energy" class="content-card">
+        <h1>功与机械能</h1>
+        
+        <h2>做功的定义</h2>
+        <div class="diagram-box">
+            <svg width="300" height="150" viewBox="0 0 300 150">
+                <rect x="50" y="80" width="60" height="40" fill="#b2bec3" stroke="#2d3436"/>
+                <line x1="50" y1="120" x2="250" y2="120" stroke="#636e72" stroke-width="1"/>
+                <line x1="110" y1="100" x2="180" y2="60" stroke="#d63031" stroke-width="2"/>
+                <text x="190" y="60" fill="#d63031">F</text>
+                <path d="M 140 85 A 30 30 0 0 0 130 100" fill="none" stroke="#2d3436"/>
+                <text x="150" y="95">&alpha;</text>
+                <line x1="110" y1="100" x2="200" y2="100" stroke="#0984e3" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="160" y="120" fill="#0984e3">l (位移)</text>
+            </svg>
+            <div class="diagram-caption">图3：恒力做功示意图</div>
+        </div>
+        <div class="formula-box">
+            <div class="math">W = Fl cos&alpha;</div>
+            <div class="math">W<sub>合</sub> = &Delta;E<sub>k</sub> (动能定理)</div>
+        </div>
+        
+        <div class="derivation">
+            <strong>💡 动能定理推导：</strong>
+            <p>1. 牛顿第二定律：F = ma</p>
+            <p>2. 运动学公式：v<sup>2</sup> - v<sub>0</sub><sup>2</sup> = 2ax &rarr; ax = (v<sup>2</sup> - v<sub>0</sub><sup>2</sup>)/2</p>
+            <p>3. 功的定义：W = Fx = max</p>
+            <p>4. 代入消去 ax：W = m[(v<sup>2</sup> - v<sub>0</sub><sup>2</sup>)/2] = &frac12;mv<sup>2</sup> - &frac12;mv<sub>0</sub><sup>2</sup></p>
+        </div>
+    </section>
+
+    <!-- 4.2 动量 (新增详细图文) -->
+    <section id="momentum" class="content-card">
+        <h1>动量守恒定律</h1>
+        
+        <h2>碰撞模型</h2>
+        <div class="diagram-box">
+            <svg width="300" height="150" viewBox="0 0 300 150">
+                <circle cx="50" cy="75" r="20" fill="#d63031"/>
+                <text x="40" y="80" fill="white">m₁</text>
+                <line x1="70" y1="75" x2="100" y2="75" stroke="#2d3436" stroke-width="2" marker-end="url(#arrow)"/>
+                <text x="80" y="65">v₁</text>
+                
+                <circle cx="200" cy="75" r="20" fill="#0984e3"/>
+                <text x="190" y="80" fill="white">m₂</text>
+                <line x1="170" y1="75" x2="180" y2="75" stroke="#2d3436" stroke-width="2"/>
+                <text x="160" y="65">v₂</text>
+            </svg>
+            <div class="diagram-caption">图4：一维碰撞前状态 (m₁ 追 m₂)</div>
+        </div>
+
+        <div class="formula-box">
+            <div class="math">m<sub>1</sub>v<sub>1</sub> + m<sub>2</sub>v<sub>2</sub> = m<sub>1</sub>v<sub>1</sub>' + m<sub>2</sub>v<sub>2</sub>'</div>
+        </div>
+
+        <div class="derivation">
+            <strong>💡 弹性碰撞解题秘籍（一动碰一静）：</strong>
+            <p>若 m₂ 静止 (v₂=0)，且碰撞过程无机械能损失（弹性）：</p>
+            <p>1. 动量守恒：m₁v₁ = m₁v₁' + m₂v₂'</p>
+            <p>2. 能量守恒：&frac12;m₁v₁<sup>2</sup> = &frac12;m₁v₁'<sup>2</sup> + &frac12;m₂v₂'<sup>2</sup></p>
+            <p><strong>联立解得：</strong></p>
+            <p>v₁' = [(m₁-m₂)/(m₁+m₂)] v₁</p>
+            <p>v₂' = [2m₁/(m₁+m₂)] v₁</p>
+            <p><span class="highlight">特例：</span> 若质量相等，两者交换速度（碰球效应）。</p>
+        </div>
+    </section>
+
+    <!-- 5.1 静电场 (新增) -->
+    <section id="electric-field" class="content-card">
+        <h1>静电场</h1>
+        
+        <h2>带电粒子的偏转</h2>
+        <div class="diagram-box">
+            <svg width="300" height="150" viewBox="0 0 300 150">
+                <rect x="50" y="20" width="200" height="10" fill="#b2bec3"/>
+                <rect x="50" y="120" width="200" height="10" fill="#b2bec3"/>
+                <path d="M 50 70 Q 150 70 250 110" stroke="#d63031" stroke-width="2" fill="none"/>
+                <text x="60" y="60">v₀</text>
+                <line x1="150" y1="35" x2="150" y2="115" stroke="#0984e3" stroke-width="1" stroke-dasharray="5,5"/>
+                <text x="160" y="80" fill="#0984e3">E</text>
+            </svg>
+            <div class="diagram-caption">图5：类平抛运动轨迹</div>
+        </div>
+
+        <div class="derivation">
+            <strong>💡 类平抛解题步骤：</strong>
+            <p>1. <strong>水平方向：</strong> 匀速直线运动 t = L / v₀</p>
+            <p>2. <strong>竖直方向：</strong> 初速度为0的匀加速运动</p>
+            <p>加速度 a = F/m = qE/m = qU / (md)</p>
+            <p>侧移量 y = &frac12;at<sup>2</sup> = qUL<sup>2</sup> / (2mdv₀<sup>2</sup>)</p>
+        </div>
+    </section>
+
+    <!-- 5.2 恒定电流 (新增) -->
+    <section id="circuits" class="content-card">
+        <h1>恒定电流</h1>
+        
+        <h2>闭合电路欧姆定律</h2>
+        <div class="formula-box">
+            <div class="math">I = E / (R + r)</div>
+            <div class="math">P<sub>出</sub> = I<sup>2</sup>R = [E/(R+r)]<sup>2</sup> R</div>
+        </div>
+
+        <div class="derivation">
+            <strong>💡 什么时候电源输出功率最大？</strong>
+            <p>利用数学基本不等式或求导：</p>
+            <p>将 P<sub>出</sub> 变形：P<sub>出</sub> = E<sup>2</sup> / [ (R-r)<sup>2</sup>/R + 4r ]</p>
+            <p>当且仅当 <strong>R = r</strong> (外电阻等于内阻) 时，分母最小，功率最大。</p>
+            <p>最大功率 P<sub>max</sub> = E<sup>2</sup> / 4r</p>
+        </div>
+    </section>
+
+    <!-- 5.3 磁场 (保持) -->
+    <section id="magnetism" class="content-card">
+        <h1>磁场与洛伦兹力</h1>
+        <div class="diagram-box">
+            <svg width="300" height="250" viewBox="0 0 300 250">
+                <line x1="150" y1="150" x2="150" y2="30" stroke="#2d3436" stroke-width="3"/>
+                <text x="160" y="40" font-weight="bold">B (穿手心)</text>
+                <line x1="150" y1="150" x2="260" y2="150" stroke="#2d3436" stroke-width="3"/>
+                <text x="270" y="155" font-weight="bold">v (四指)</text>
+                <line x1="150" y1="150" x2="80" y2="220" stroke="#d63031" stroke-width="4"/>
+                <text x="50" y="230" font-weight="bold" fill="#d63031">F (大拇指)</text>
+            </svg>
+            <div class="diagram-caption">图6：左手定则立体示意图</div>
+        </div>
+        <div class="derivation">
+            <strong>💡 周期 T 与速度无关：</strong>
+            <p>T = 2&pi;m / qB。这是回旋加速器能同步加速粒子的基础。</p>
+        </div>
+    </section>
+
+    <!-- 6.1 电磁感应 (新增) -->
+    <section id="induction" class="content-card">
+        <h1>电磁感应</h1>
+        
+        <h2>导体切割磁感线</h2>
+        <div class="diagram-box">
+            <svg width="300" height="150" viewBox="0 0 300 150">
+                <line x1="50" y1="40" x2="250" y2="40" stroke="#b2bec3" stroke-width="4"/>
+                <line x1="50" y1="110" x2="250" y2="110" stroke="#b2bec3" stroke-width="4"/>
+                <rect x="120" y="40" width="10" height="70" fill="#2d3436"/>
+                <line x1="125" y1="75" x2="185" y2="75" stroke="#0984e3" stroke-width="2" marker-end="url(#arrow)"/>
+                <text x="190" y="80">v</text>
+                <text x="260" y="45">B (垂直纸面)</text>
+            </svg>
+            <div class="diagram-caption">图7：双轨模型示意图</div>
+        </div>
+        
+        <div class="formula-box">
+            <div class="math">E = BLv</div>
+        </div>
+
+        <div class="derivation">
+            <strong>💡 楞次定律口诀详解：</strong>
+            <p><strong>1. 增反减同：</strong> 磁通量增加，感应场反向；减少则同向。</p>
+            <p><strong>2. 来拒去留：</strong> 磁体靠近线圈，线圈排斥它；磁体远离，线圈吸引它。</p>
+            <p>本质：能量守恒，阻碍相对运动。</p>
+        </div>
+    </section>
+
+    <!-- 6.2 交变电流 (新增) -->
+    <section id="ac" class="content-card">
+        <h1>交变电流</h1>
+        
+        <h2>正弦交流电的产生</h2>
+        <div class="diagram-box">
+            <svg width="300" height="150" viewBox="0 0 300 150">
+                <path d="M 20 75 Q 85 5 150 75 T 280 75" stroke="#d63031" stroke-width="2" fill="none"/>
+                <line x1="20" y1="75" x2="290" y2="75" stroke="#2d3436"/>
+                <line x1="20" y1="140" x2="20" y2="10" stroke="#2d3436"/>
+                <text x="30" y="25">i/u</text>
+                <text x="290" y="90">t</text>
+            </svg>
+            <div class="diagram-caption">图8：正弦交流电波形</div>
+        </div>
+
+        <div class="derivation">
+            <strong>💡 有效值是怎么算出来的？</strong>
+            <p>定义依据：<strong>热效应等效</strong>。</p>
+            <p>让交流电和直流电通过相同电阻 R。</p>
+            <p>交流电一个周期内产热：Q = &int; i<sup>2</sup>R dt</p>
+            <p>直流电产热：Q = I<sup>2</sup>RT</p>
+            <p>数学积分计算后得出：<strong>I = I<sub>m</sub> / &radic;2</strong> （仅适用于正弦波）</p>
+        </div>
+    </section>
+
+    <!-- 7.2 光学 (新增) -->
+    <section id="optics" class="content-card">
+        <h1>光学与波</h1>
+        
+        <h2>折射定律</h2>
+        <div class="diagram-box">
+            <svg width="200" height="200" viewBox="0 0 200 200">
+                <line x1="20" y1="100" x2="180" y2="100" stroke="#2d3436" stroke-width="2"/>
+                <line x1="100" y1="20" x2="100" y2="180" stroke="#b2bec3" stroke-dasharray="4"/>
+                <line x1="50" y1="20" x2="100" y2="100" stroke="#d63031" stroke-width="2"/>
+                <line x1="100" y1="100" x2="130" y2="180" stroke="#d63031" stroke-width="2"/>
+                <text x="180" y="90">介质界</text>
+            </svg>
+            <div class="diagram-caption">图9：光从空气射入玻璃 (i > r)</div>
+        </div>
+        
+        <div class="formula-box">
+            <div class="math">n = sin i / sin r = c / v</div>
+            <div class="math">&Delta;x = (L/d) &lambda;</div>
+        </div>
+
+        <div class="derivation">
+            <strong>💡 全反射条件：</strong>
+            <p>1. 必须从<strong>光密介质</strong>射向<strong>光疏介质</strong> (n大 &rarr; n小)。</p>
+            <p>2. 入射角大于临界角 C，其中 sin C = 1/n。</p>
+        </div>
+    </section>
+
+    <!-- 7.3 原子物理 (新增) -->
+    <section id="atom" class="content-card">
+        <h1>原子物理</h1>
+        
+        <h2>能级跃迁</h2>
+        <div class="diagram-box">
+            <svg width="200" height="150" viewBox="0 0 200 150">
+                <line x1="50" y1="120" x2="150" y2="120" stroke="#2d3436" stroke-width="2"/>
+                <text x="160" y="125">n=1 (基态)</text>
+                <line x1="50" y1="80" x2="150" y2="80" stroke="#2d3436" stroke-width="2"/>
+                <text x="160" y="85">n=2</text>
+                <line x1="50" y1="50" x2="150" y2="50" stroke="#2d3436" stroke-width="2"/>
+                <text x="160" y="55">n=3</text>
+                
+                <line x1="100" y1="50" x2="100" y2="110" stroke="#d63031" stroke-width="2" marker-end="url(#arrow)"/>
+                <text x="110" y="90" font-size="10" fill="#d63031">放出光子</text>
+            </svg>
+            <div class="diagram-caption">图10：玻尔模型能级图</div>
+        </div>
+        
+        <div class="formula-box">
+            <div class="math">h&nu; = E<sub>m</sub> - E<sub>n</sub></div>
+            <div class="math">E<sub>k</sub> = h&nu; - W<sub>0</sub> (光电效应)</div>
+        </div>
+
+        <div class="derivation">
+            <strong>💡 考点辨析：</strong>
+            <p><strong>光电效应</strong>证明了光具有粒子性。</p>
+            <p><strong>光强</strong>决定光电流大小（打出的电子数量）。</p>
+            <p><strong>频率</strong>决定光电子最大初动能（打出的电子有多快）。</p>
+        </div>
+    </section>
+
+    <!-- 7.1 热学 (保持) -->
+    <section id="thermo" class="content-card">
+        <h1>热学 (选修3-3)</h1>
+        <div class="diagram-box">
+            <svg width="350" height="250" viewBox="0 0 350 250">
+                <line x1="40" y1="220" x2="320" y2="220" stroke="#333" stroke-width="2"/>
+                <line x1="40" y1="220" x2="40" y2="20" stroke="#333" stroke-width="2"/>
+                <text x="320" y="240">V</text>
+                <text x="20" y="30">p</text>
+                <path d="M 50 180 Q 80 80 200 60" stroke="#0984e3" stroke-width="2" fill="none"/>
+                <text x="210" y="60" fill="#0984e3">T₁</text>
+            </svg>
+            <div class="diagram-caption">图11：理想气体 P-V 图像</div>
+        </div>
+        <div class="formula-box">
+            <div class="math">pV / T = C</div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    // 选项卡切换逻辑
+    document.addEventListener('DOMContentLoaded', () => {
+        const navItems = document.querySelectorAll('.nav-item');
+        const cards = document.querySelectorAll('.content-card');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                cards.forEach(card => card.classList.remove('active'));
+
+                item.classList.add('active');
+                const targetId = item.getAttribute('data-target');
+                const targetCard = document.getElementById(targetId);
+                
+                if (targetCard) {
+                    targetCard.classList.add('active');
+                    document.querySelector('.main-content').scrollTop = 0;
+                }
+            });
+        });
+    });
+</script>
+<!-- ===== 站长控制系统 (门禁 + 黑名单) ===== -->
+<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;">
+    <h2 style="margin-bottom: 20px;">🔒 核心物理知识库 - 访问受限</h2>
+    <input type="password" id="password-input" placeholder="请输入访问密码" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; margin-bottom: 15px; width: 250px;">
+    <button onclick="checkAccess()" style="padding: 10px 30px; font-size: 16px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">进入系统</button>
+    <p id="login-msg" style="margin-top: 15px; color: #ff6b6b; font-size: 14px;"></p>
+    <p style="margin-top: 50px; font-size: 12px; color: #95a5a6;">Your IP: <span id="user-ip">Loading...</span></p>
+</div>
+
+<!-- 这是一个免费的统计代码 (StatCounter)，用来让你在后台看谁来了 -->
+<!-- 请稍后注册 StatCounter 替换这里，目前先留空或使用模拟代码 -->
+<script type="text/javascript">
+// 这里预留给统计工具
+</script>
+
+<script>
+    // ===== 站长控制台设置 =====
+    const CONFIG = {
+        password: "Wuxiangyu", // 你的密码
+        // 黑名单列表：在这里输入你想封禁的人的IP地址，用引号包起来，逗号隔开
+        // 例如: bannedIPs: ["192.168.1.1", "14.23.11.5"],
+        bannedIPs: [] 
+    };
+
+    let userCurrentIP = "";
+
+    // 1. 获取用户IP地址
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            userCurrentIP = data.ip;
+            document.getElementById('user-ip').innerText = userCurrentIP;
+            
+            // 自动检查黑名单
+            if (CONFIG.bannedIPs.includes(userCurrentIP)) {
+                document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px; color:red;'>🚫 你的IP已被管理员封禁，无法访问。</h1>";
+            }
+        })
+        .catch(err => {
+            document.getElementById('user-ip').innerText = "IP检测失败 (可能是广告拦截)";
+        });
+
+    // 2. 检查密码与权限
+    function checkAccess() {
+        const input = document.getElementById('password-input').value;
+        const msg = document.getElementById('login-msg');
+
+        // 先检查黑名单
+        if (CONFIG.bannedIPs.includes(userCurrentIP)) {
+            msg.innerText = "🚫 你的设备已被列入黑名单，禁止访问！";
+            return;
+        }
+
+        // 检查密码
+        if (input === CONFIG.password) {
+            // 密码正确，移除遮罩
+            document.getElementById('login-overlay').style.display = 'none';
+            // 记录一次成功登录 (可以在这里扩展)
+            localStorage.setItem('isLoggedIn', 'true');
+        } else {
+            msg.innerText = "❌ 密码错误，请联系站长获取权限。";
+        }
+    }
+
+    // 可选：记住登录状态 (刷新不用重输密码)，如果想每次都输，把这段删掉
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        // document.getElementById('login-overlay').style.display = 'none';
+    }
+
+    // ===== 原有的选项卡切换逻辑 (保持不变) =====
+    document.addEventListener('DOMContentLoaded', () => {
+        const navItems = document.querySelectorAll('.nav-item');
+        const cards = document.querySelectorAll('.content-card');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                cards.forEach(card => card.classList.remove('active'));
+
+                item.classList.add('active');
+                const targetId = item.getAttribute('data-target');
+                const targetCard = document.getElementById(targetId);
+                
+                if (targetCard) {
+                    targetCard.classList.add('active');
+                    document.querySelector('.main-content').scrollTop = 0;
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
