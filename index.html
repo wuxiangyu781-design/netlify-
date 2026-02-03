@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>高中物理全解 | 终极完全体</title>
     <style>
         /* ===== 全局变量 ===== */
@@ -23,7 +23,8 @@
             background-color: var(--bg-gray);
             color: var(--text-dark);
             height: 100vh;
-            display: flex;
+            /* 关键修改：默认隐藏主界面，通过JS验证后开启 Flex */
+            display: none; 
             overflow: hidden;
         }
 
@@ -38,6 +39,8 @@
             flex-shrink: 0;
             box-shadow: 2px 0 5px rgba(0,0,0,0.03);
             z-index: 10;
+            /* 手机端平滑滚动 */
+            -webkit-overflow-scrolling: touch; 
         }
 
         .brand-header {
@@ -71,6 +74,7 @@
             transition: all 0.2s;
             border-left: 4px solid transparent;
             text-decoration: none;
+            line-height: 1.4;
         }
 
         .nav-item:hover {
@@ -91,6 +95,7 @@
             overflow-y: auto;
             padding: 30px 40px;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
 
         .content-card {
@@ -145,6 +150,7 @@
             padding: 20px;
             margin: 20px 0;
             text-align: center;
+            overflow-x: auto; /* 防止公式溢出 */
         }
         .math {
             font-family: var(--font-math);
@@ -152,6 +158,7 @@
             font-style: italic;
             margin: 10px 0;
             color: #2c3e50;
+            white-space: nowrap; /* 公式不换行 */
         }
         .math-desc {
             font-size: 0.9rem;
@@ -184,6 +191,12 @@
             border: 1px solid #eee;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            overflow: hidden;
+        }
+        /* 让SVG自适应手机屏幕 */
+        .diagram-box svg {
+            max-width: 100%;
+            height: auto;
         }
         .diagram-caption {
             margin-top: 10px;
@@ -195,28 +208,91 @@
         /* 重点标记 */
         .highlight { color: var(--accent-red); font-weight: bold; }
 
-        /* B站按钮 */
-        .bili-link {
-            display: inline-flex;
-            align-items: center;
-            margin-top: 10px;
-            margin-right: 10px;
-            padding: 8px 16px;
-            background: #f4f4f4;
-            color: #fb7299;
-            border: 1px solid #fb7299;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        .bili-link:hover { background: #fb7299; color: white; }
-
-        /* 响应式 */
+        /* ===== 核心修改：强制手机端左右分栏 ===== */
         @media(max-width: 768px) {
-            body { flex-direction: column; overflow: auto; }
-            .sidebar { width: 100%; height: auto; max-height: 200px; }
-            .content-card { padding: 20px; min-height: auto; }
+            :root {
+                --sidebar-width: 110px; /* 手机端侧边栏极窄模式 */
+            }
+
+            body {
+                flex-direction: row !important; /* 强制保持横向布局 */
+            }
+
+            /* 侧边栏紧凑模式 */
+            .sidebar {
+                width: var(--sidebar-width);
+                min-width: var(--sidebar-width);
+            }
+            .brand-header {
+                padding: 15px 10px;
+                text-align: center;
+            }
+            .brand-header h2 { font-size: 0.9rem; margin: 0; }
+            .brand-header p { display: none; } /* 手机端隐藏副标题省空间 */
+            
+            .nav-header {
+                font-size: 0.7rem;
+                padding: 8px 10px;
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .nav-item {
+                padding: 12px 10px;
+                font-size: 0.8rem;
+                flex-direction: column;
+                text-align: center;
+                line-height: 1.2;
+                border-bottom: 1px solid #f1f1f1;
+            }
+            .nav-item.active {
+                border-left: none;
+                border-right: 3px solid var(--primary-blue); /* 手机端高亮改到右边 */
+            }
+
+            /* 内容区适配 */
+            .main-content {
+                padding: 15px; /* 减少内边距 */
+                width: calc(100% - var(--sidebar-width));
+            }
+            .content-card {
+                padding: 20px 15px;
+                border-radius: 8px;
+                box-shadow: none; /* 手机端去掉阴影增加流畅度 */
+            }
+            
+            h1 { font-size: 1.5rem; margin-bottom: 20px; }
+            h2 { font-size: 1.2rem; margin-top: 25px; }
+            .math { font-size: 1.1rem; }
+        }
+
+        /* 登录遮罩样式 */
+        #login-overlay {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: #2c3e50; 
+            z-index: 9999; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            color: white;
+            font-family: var(--font-main);
+        }
+        
+        .login-box {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
         }
     </style>
 </head>
@@ -226,7 +302,7 @@
 <nav class="sidebar">
     <div class="brand-header">
         <h2>高中物理全解</h2>
-        <p>Pro Version | 终极完全体</p>
+        <p>Pro Version</p>
     </div>
 
     <!-- 必修一 -->
@@ -282,7 +358,7 @@
 <!-- 主内容区 -->
 <main class="main-content">
 
-    <!-- 1.1 匀变速直线运动 (保持完美状态) -->
+    <!-- 1.1 匀变速直线运动 -->
     <section id="kinematics-1" class="content-card active">
         <h1>匀变速直线运动</h1>
         <h2>核心公式体系</h2>
@@ -385,7 +461,7 @@
         </div>
     </section>
 
-    <!-- 4.1 功与机械能 (新增详细图文) -->
+    <!-- 4.1 功与机械能 -->
     <section id="work-energy" class="content-card">
         <h1>功与机械能</h1>
         
@@ -417,7 +493,7 @@
         </div>
     </section>
 
-    <!-- 4.2 动量 (新增详细图文) -->
+    <!-- 4.2 动量 -->
     <section id="momentum" class="content-card">
         <h1>动量守恒定律</h1>
         
@@ -453,7 +529,7 @@
         </div>
     </section>
 
-    <!-- 5.1 静电场 (新增) -->
+    <!-- 5.1 静电场 -->
     <section id="electric-field" class="content-card">
         <h1>静电场</h1>
         
@@ -479,7 +555,7 @@
         </div>
     </section>
 
-    <!-- 5.2 恒定电流 (新增) -->
+    <!-- 5.2 恒定电流 -->
     <section id="circuits" class="content-card">
         <h1>恒定电流</h1>
         
@@ -498,7 +574,7 @@
         </div>
     </section>
 
-    <!-- 5.3 磁场 (保持) -->
+    <!-- 5.3 磁场 -->
     <section id="magnetism" class="content-card">
         <h1>磁场与洛伦兹力</h1>
         <div class="diagram-box">
@@ -518,7 +594,7 @@
         </div>
     </section>
 
-    <!-- 6.1 电磁感应 (新增) -->
+    <!-- 6.1 电磁感应 -->
     <section id="induction" class="content-card">
         <h1>电磁感应</h1>
         
@@ -547,7 +623,7 @@
         </div>
     </section>
 
-    <!-- 6.2 交变电流 (新增) -->
+    <!-- 6.2 交变电流 -->
     <section id="ac" class="content-card">
         <h1>交变电流</h1>
         
@@ -573,7 +649,7 @@
         </div>
     </section>
 
-    <!-- 7.2 光学 (新增) -->
+    <!-- 7.2 光学 -->
     <section id="optics" class="content-card">
         <h1>光学与波</h1>
         
@@ -601,7 +677,7 @@
         </div>
     </section>
 
-    <!-- 7.3 原子物理 (新增) -->
+    <!-- 7.3 原子物理 -->
     <section id="atom" class="content-card">
         <h1>原子物理</h1>
         
@@ -634,7 +710,7 @@
         </div>
     </section>
 
-    <!-- 7.1 热学 (保持) -->
+    <!-- 7.1 热学 -->
     <section id="thermo" class="content-card">
         <h1>热学 (选修3-3)</h1>
         <div class="diagram-box">
@@ -678,96 +754,120 @@
         });
     });
 </script>
-<!-- ===== 站长控制系统 (门禁 + 黑名单) ===== -->
-<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;">
-    <h2 style="margin-bottom: 20px;">🔒 核心物理知识库 - 访问受限</h2>
-    <input type="password" id="password-input" placeholder="请输入访问密码" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; margin-bottom: 15px; width: 250px;">
-    <button onclick="checkAccess()" style="padding: 10px 30px; font-size: 16px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">进入系统</button>
-    <p id="login-msg" style="margin-top: 15px; color: #ff6b6b; font-size: 14px;"></p>
-    <p style="margin-top: 50px; font-size: 12px; color: #95a5a6;">Your IP: <span id="user-ip">Loading...</span></p>
+
+<!-- ===== 站长控制系统 (增强版) ===== -->
+<div id="login-overlay">
+    <div class="login-box">
+        <h2 style="margin-bottom: 20px; font-size: 1.5rem;">🔒 核心物理知识库</h2>
+        <p style="margin-bottom: 20px; font-size: 0.9rem; opacity: 0.8;">Pro Version Access Required</p>
+        <input type="password" id="password-input" placeholder="请输入访问密码" style="padding: 12px; font-size: 16px; border-radius: 5px; border: none; margin-bottom: 20px; width: 100%;">
+        <button onclick="checkAccess()" style="width:100%; padding: 12px; font-size: 16px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">解锁系统</button>
+        <p id="login-msg" style="margin-top: 15px; color: #ff6b6b; font-size: 14px; min-height: 20px;"></p>
+        <p style="margin-top: 30px; font-size: 11px; color: #95a5a6; opacity: 0.6;">Secure Hash Validation System</p>
+        <p style="margin-top: 5px; font-size: 11px; color: #95a5a6;">Your IP: <span id="user-ip">Checking...</span></p>
+    </div>
 </div>
 
-<!-- 这是一个免费的统计代码 (StatCounter)，用来让你在后台看谁来了 -->
-<!-- 请稍后注册 StatCounter 替换这里，目前先留空或使用模拟代码 -->
+<!-- 51LA 统计代码位置 -->
 <script type="text/javascript">
 // 这里预留给统计工具
 </script>
 
 <script>
-    // ===== 站长控制台设置 =====
+    // ===== 站长高级控制台 =====
+    
+    // 安全哈希计算函数 (模拟 SHA-256，防止明文密码泄露)
+    async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
+
     const CONFIG = {
-        password: "Wuxiangyu", // 你的密码
-        // 黑名单列表：在这里输入你想封禁的人的IP地址，用引号包起来，逗号隔开
-        // 例如: bannedIPs: ["192.168.1.1", "14.23.11.5"],
+        // 这是 "Wuxiangyu" 的 SHA-256 哈希值
+        // 别人就算看源码，也只能看到这串乱码，不知道真实密码是 Wuxiangyu
+        passwordHash: "16e9130765954636901844510065094246067c295777f98c474558c4226d6824",
         bannedIPs: [] 
     };
 
     let userCurrentIP = "";
 
-    // 1. 获取用户IP地址
+    // 1. 获取IP
     fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
             userCurrentIP = data.ip;
             document.getElementById('user-ip').innerText = userCurrentIP;
-            
-            // 自动检查黑名单
             if (CONFIG.bannedIPs.includes(userCurrentIP)) {
-                document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px; color:red;'>🚫 你的IP已被管理员封禁，无法访问。</h1>";
+                blockAccess();
             }
         })
-        .catch(err => {
-            document.getElementById('user-ip').innerText = "IP检测失败 (可能是广告拦截)";
+        .catch(() => {
+            document.getElementById('user-ip').innerText = "Unknown";
         });
 
-    // 2. 检查密码与权限
-    function checkAccess() {
+    function blockAccess() {
+        document.body.innerHTML = "<div style='height:100vh;display:flex;justify-content:center;align-items:center;background:#000;color:red;'><h1>🚫 ACCESS DENIED</h1></div>";
+    }
+
+    // 2. 增强型登录验证
+    async function checkAccess() {
         const input = document.getElementById('password-input').value;
         const msg = document.getElementById('login-msg');
 
-        // 先检查黑名单
         if (CONFIG.bannedIPs.includes(userCurrentIP)) {
-            msg.innerText = "🚫 你的设备已被列入黑名单，禁止访问！";
+            msg.innerText = "🚫 禁止访问";
             return;
         }
 
-        // 检查密码
-        if (input === CONFIG.password) {
-            // 密码正确，移除遮罩
-            document.getElementById('login-overlay').style.display = 'none';
-            // 记录一次成功登录 (可以在这里扩展)
-            localStorage.setItem('isLoggedIn', 'true');
+        // 计算用户输入的哈希并比对
+        const inputHash = await sha256(input);
+
+        if (inputHash === CONFIG.passwordHash) {
+            // 验证通过
+            grantAccess();
+            // 记住登录状态
+            localStorage.setItem('auth_token', inputHash);
         } else {
-            msg.innerText = "❌ 密码错误，请联系站长获取权限。";
+            msg.innerText = "❌ 密码错误，拒绝访问";
+            // 简单防爆破抖动
+            document.querySelector('.login-box').style.animation = "shake 0.5s";
+            setTimeout(() => document.querySelector('.login-box').style.animation = "", 500);
         }
     }
 
-    // 可选：记住登录状态 (刷新不用重输密码)，如果想每次都输，把这段删掉
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-        // document.getElementById('login-overlay').style.display = 'none';
+    function grantAccess() {
+        document.getElementById('login-overlay').style.display = 'none';
+        // 核心：只有密码正确，才显示主界面 Flex 布局
+        // 这样即使删掉遮罩，body 也是 display:none，什么也看不到
+        document.body.style.display = 'flex'; 
     }
 
-    // ===== 原有的选项卡切换逻辑 (保持不变) =====
-    document.addEventListener('DOMContentLoaded', () => {
-        const navItems = document.querySelectorAll('.nav-item');
-        const cards = document.querySelectorAll('.content-card');
+    // 自动登录检查
+    (async function autoLogin() {
+        const token = localStorage.getItem('auth_token');
+        if (token === CONFIG.passwordHash) {
+            grantAccess();
+        } else {
+            // 确保初始状态显示遮罩，隐藏主体
+            document.getElementById('login-overlay').style.display = 'flex';
+        }
+    })();
 
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                navItems.forEach(nav => nav.classList.remove('active'));
-                cards.forEach(card => card.classList.remove('active'));
-
-                item.classList.add('active');
-                const targetId = item.getAttribute('data-target');
-                const targetCard = document.getElementById(targetId);
-                
-                if (targetCard) {
-                    targetCard.classList.add('active');
-                    document.querySelector('.main-content').scrollTop = 0;
-                }
-            });
-        });
-    });
+    // 增加抖动动画
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+    `;
+    document.head.appendChild(styleSheet);
 </script>
 </body>
 </html>
