@@ -23,15 +23,14 @@
             background-color: var(--bg-gray);
             color: var(--text-dark);
             height: 100vh;
-            overflow: hidden; /* 防止出现双重滚动条 */
+            overflow: hidden; 
         }
 
         /* ===== 核心布局容器 (默认隐藏，验证通过后显示) ===== */
         #app-container {
-            display: none; /* ⚠️ 默认隐藏内容，防止未登录查看 */
+            display: none; /* 默认隐藏内容 */
             width: 100%;
             height: 100%;
-            /* 桌面端布局：左侧边栏，右主内容 */
             flex-direction: row; 
         }
 
@@ -100,7 +99,7 @@
             overflow-y: auto;
             padding: 30px 40px;
             scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; /* iOS顺滑滚动 */
+            -webkit-overflow-scrolling: touch; 
         }
 
         .content-card {
@@ -204,15 +203,14 @@
 
         .highlight { color: var(--accent-red); font-weight: bold; }
 
-        /* ===== 手机端强制左右分栏设置 ===== */
+        /* ===== 手机端强制左右分栏设置 (完美保持) ===== */
         @media(max-width: 768px) {
             :root {
-                --sidebar-width: 100px; /* 侧边栏变窄，留空间给内容 */
+                --sidebar-width: 100px;
             }
 
-            /* 强制 app-container 为横向布局 */
             #app-container {
-                display: flex !important; /* 优先级最高 */
+                display: flex !important;
                 flex-direction: row !important;
             }
 
@@ -221,7 +219,6 @@
                 min-width: var(--sidebar-width);
             }
 
-            /* 手机端侧边栏文字简化 */
             .brand-header { padding: 10px 5px; text-align: center; }
             .brand-header h2 { font-size: 0.8rem; }
             .brand-header p { display: none; }
@@ -237,7 +234,6 @@
             }
             .nav-item.active { border-left: none; border-right: 3px solid var(--primary-blue); }
 
-            /* 内容区适配 */
             .main-content {
                 padding: 15px;
                 width: calc(100% - var(--sidebar-width));
@@ -249,7 +245,7 @@
             .math { font-size: 1.0rem; }
         }
 
-        /* 登录遮罩样式 (z-index 必须极高) */
+        /* 登录遮罩样式 */
         #login-overlay {
             position: fixed; 
             top: 0; 
@@ -257,7 +253,7 @@
             width: 100%; 
             height: 100%; 
             background: #2c3e50; 
-            z-index: 99999; /* 确保在最上层 */
+            z-index: 99999; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -278,7 +274,7 @@
 </head>
 <body>
 
-<!-- 1. 登录遮罩层 (始终在最上层) -->
+<!-- 1. 登录遮罩层 (纯净版，无外部IP检测) -->
 <div id="login-overlay">
     <div class="login-box">
         <h2 style="margin-bottom: 20px;">🔒 物理知识库</h2>
@@ -286,11 +282,10 @@
         <input type="password" id="password-input" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; margin-bottom: 15px; width: 100%; outline: none;">
         <button onclick="attemptLogin()" style="width: 100%; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">进入系统</button>
         <p id="login-msg" style="margin-top: 15px; color: #ff6b6b; font-size: 14px; min-height: 20px;"></p>
-        <p style="margin-top: 30px; font-size: 12px; color: #7f8c8d;">IP Check: <span id="user-ip">Loading...</span></p>
     </div>
 </div>
 
-<!-- 2. 内容容器 (包含侧边栏和主内容，默认隐藏) -->
+<!-- 2. 内容容器 -->
 <div id="app-container">
     
     <!-- 侧边栏 -->
@@ -300,7 +295,6 @@
             <p>Pro Version</p>
         </div>
 
-        <!-- 必修一 -->
         <div class="nav-header">一、运动学 (必修1)</div>
         <div class="nav-group">
             <a class="nav-item active" data-target="kinematics-1">匀变速直线运动</a>
@@ -313,7 +307,6 @@
             <a class="nav-item" data-target="newton">牛顿运动定律</a>
         </div>
 
-        <!-- 必修二 -->
         <div class="nav-header">三、曲线与天体 (必修2)</div>
         <div class="nav-group">
             <a class="nav-item" data-target="projectile">平抛与圆周运动</a>
@@ -326,7 +319,6 @@
             <a class="nav-item" data-target="momentum">动量守恒定律</a>
         </div>
 
-        <!-- 选修 3-1 -->
         <div class="nav-header">五、电磁学 (3-1)</div>
         <div class="nav-group">
             <a class="nav-item" data-target="electric-field">静电场</a>
@@ -334,14 +326,12 @@
             <a class="nav-item" data-target="magnetism">磁场与洛伦兹力</a>
         </div>
 
-        <!-- 选修 3-2 -->
         <div class="nav-header">六、电磁感应 (3-2)</div>
         <div class="nav-group">
             <a class="nav-item" data-target="induction">电磁感应定律</a>
             <a class="nav-item" data-target="ac">交变电流</a>
         </div>
 
-        <!-- 选修 3-3/3-4/3-5 -->
         <div class="nav-header">七、近代物理与热学</div>
         <div class="nav-group">
             <a class="nav-item" data-target="thermo">热学 (3-3)</a>
@@ -725,83 +715,52 @@
     </main>
 </div>
 
-<!-- 51LA 统计代码位置 -->
-<script type="text/javascript">
-// 这里预留给统计工具
-<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-<script>LA.init({id:"3OttA5LLiZLmlG9x",ck:"3OttA5LLiZLmlG9x"})</script>
-</script>
+<!-- ============================================== -->
+<!--    ⚠️ 51.LA 统计代码放置区 (请粘贴在下方)   -->
+<!-- ============================================== -->
+
+<div style="display:none">
+   <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"3OtujsBNwxc254UA",ck:"3OtujsBNwxc254UA"})</script>
+    
+</div>
+
+<!-- ============================================== -->
 
 <script>
-    // ===== 1. 选项卡切换逻辑 (修复版) =====
+    // ===== 1. 选项卡切换逻辑 =====
     document.addEventListener('DOMContentLoaded', () => {
         const navItems = document.querySelectorAll('.nav-item');
         const cards = document.querySelectorAll('.content-card');
 
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
-                // 移除所有高亮
                 navItems.forEach(nav => nav.classList.remove('active'));
                 cards.forEach(card => card.classList.remove('active'));
 
-                // 添加当前高亮
                 item.classList.add('active');
                 const targetId = item.getAttribute('data-target');
                 const targetCard = document.getElementById(targetId);
                 
                 if (targetCard) {
                     targetCard.classList.add('active');
-                    // 滚动到顶部
                     document.querySelector('.main-content').scrollTop = 0;
                 }
             });
         });
     });
 
-    // ===== 2. 站长控制台 (超稳定版) =====
+    // ===== 2. 纯净版登录控制 (无任何外部依赖，极速) =====
     
-    // 配置中心
     const CONFIG = {
-        // 这是 "Wuxiangyu" 的 Base64 编码
-        // 别人看源码只能看到 "V3V4..." 这一串，虽然不是军事级加密，
-        // 但足以防止小白直接通过 Ctrl+F 搜索 "password" 找到明文。
-        // 最重要的是：它绝对稳定，不会白屏！
-        encryptedPass: "V3V4aWFuZ3l1", 
-        bannedIPs: [] 
+        // 密码: "Wuxiangyu" (Base64编码)
+        encryptedPass: "V3V4aWFuZ3l1"
     };
 
-    let userCurrentIP = "";
-
-    // 获取IP (不阻塞主流程，失败也没关系)
-    fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-            userCurrentIP = data.ip;
-            document.getElementById('user-ip').innerText = userCurrentIP;
-            if (CONFIG.bannedIPs.includes(userCurrentIP)) {
-                blockAccess();
-            }
-        })
-        .catch(() => {
-            document.getElementById('user-ip').innerText = "Unknown";
-        });
-
-    function blockAccess() {
-        document.body.innerHTML = "<div style='height:100vh;display:flex;justify-content:center;align-items:center;background:#000;color:red;'><h1>🚫 ACCESS DENIED</h1></div>";
-    }
-
-    // 登录逻辑
     function attemptLogin() {
         const input = document.getElementById('password-input').value;
         const msg = document.getElementById('login-msg');
 
-        if (CONFIG.bannedIPs.includes(userCurrentIP)) {
-            msg.innerText = "🚫 禁止访问";
-            return;
-        }
-
-        // 使用 Base64 简单混淆比对 (保证100%兼容性)
-        // btoa 是浏览器自带函数，把输入转换成 Base64
         try {
             if (btoa(input) === CONFIG.encryptedPass) {
                 grantAccess();
@@ -811,24 +770,16 @@
                 shakeBox();
             }
         } catch (e) {
-            // 防止输入特殊字符导致 btoa 报错
             msg.innerText = "❌ 密码格式错误";
         }
     }
 
-    // 授权访问：关键一步！
     function grantAccess() {
-        // 1. 隐藏登录遮罩
         document.getElementById('login-overlay').style.display = 'none';
-        
-        // 2. 显示主内容容器，并设置为 Flex 布局
-        // 这里的 display: flex 会触发 CSS 中的 @media 查询
-        // 从而在手机端实现左右分栏
         const app = document.getElementById('app-container');
         app.style.display = 'flex';
     }
 
-    // 自动登录检查
     (function autoLogin() {
         const token = localStorage.getItem('auth_token');
         if (token === CONFIG.encryptedPass) {
@@ -836,7 +787,6 @@
         }
     })();
 
-    // 错误抖动特效
     function shakeBox() {
         const box = document.querySelector('.login-box');
         box.animate([
@@ -851,4 +801,3 @@
 </script>
 </body>
 </html>
-
