@@ -345,7 +345,33 @@
         <a class="nav-item" data-target="fluids">流体力学基础</a>
     </div>
     </nav>
+    <!-- 新增章节：流体力学 (id 必须对应上面的 data-target) -->
+    <section id="fluids" class="content-card">
+        <h1>流体力学基础</h1>
+        
+        <h2>伯努利方程</h2>
+        <div class="formula-box">
+            <div class="math">p + &frac12;&rho;v<sup>2</sup> + &rho;gh = C</div>
+        </div>
+        
+        <div class="derivation">
+            <strong>💡 核心思想：能量守恒</strong>
+            <p>这个公式其实就是流体版本的“机械能守恒定律”。</p>
+            <p>p (压强能) + 动能 + 重力势能 = 常数。</p>
+            <p><span class="highlight">现象解释：</span> 为什么大风能掀翻屋顶？因为屋顶空气流速快(v大)，导致压强小(p小)，屋内气压就把屋顶顶开了。</p>
+        </div>
 
+        <h2>深度学习资源</h2>
+        <div class="diagram-box">
+            <p style="text-align: center; margin-bottom: 15px;">遇到不懂的？点击下方按钮直达 Bilibili 搜索结果</p>
+            
+            <!-- 这里就是你要的超链接，target="_blank" 表示新窗口打开 -->
+            <a href="https://search.bilibili.com/all?keyword=流体力学" target="_blank" 
+               style="display: inline-block; padding: 12px 30px; background-color: #fb7299; color: white; text-decoration: none; border-radius: 25px; font-weight: bold; box-shadow: 0 4px 10px rgba(251, 114, 153, 0.3); transition: transform 0.2s;">
+                📺 B站：搜索“流体力学”视频详解
+            </a>
+        </div>
+    </section>
     <!-- 主内容区 -->
     <main class="main-content">
         <!-- 1.1 匀变速直线运动 -->
@@ -717,33 +743,7 @@
             <div class="formula-box">
                 <div class="math">pV / T = C</div>
             </div>
-       <!-- 新增章节：流体力学 (id 必须对应上面的 data-target) -->
-    <section id="fluids" class="content-card">
-        <h1>流体力学基础</h1>
-        
-        <h2>伯努利方程</h2>
-        <div class="formula-box">
-            <div class="math">p + &frac12;&rho;v<sup>2</sup> + &rho;gh = C</div>
-        </div>
-        
-        <div class="derivation">
-            <strong>💡 核心思想：能量守恒</strong>
-            <p>这个公式其实就是流体版本的“机械能守恒定律”。</p>
-            <p>p (压强能) + 动能 + 重力势能 = 常数。</p>
-            <p><span class="highlight">现象解释：</span> 为什么大风能掀翻屋顶？因为屋顶空气流速快(v大)，导致压强小(p小)，屋内气压就把屋顶顶开了。</p>
-        </div>
-
-        <h2>深度学习资源</h2>
-        <div class="diagram-box">
-            <p style="text-align: center; margin-bottom: 15px;">遇到不懂的？点击下方按钮直达 Bilibili 搜索结果</p>
-            
-            <!-- 这里就是你要的超链接，target="_blank" 表示新窗口打开 -->
-            <a href="https://search.bilibili.com/all?keyword=流体力学" target="_blank" 
-               style="display: inline-block; padding: 12px 30px; background-color: #fb7299; color: white; text-decoration: none; border-radius: 25px; font-weight: bold; box-shadow: 0 4px 10px rgba(251, 114, 153, 0.3); transition: transform 0.2s;">
-                📺 B站：搜索“流体力学”视频详解
-            </a>
-        </div>
-    </section> 
+  
 
 <!-- ============================================== -->
 <!--    ⚠️ 51.LA 统计代码放置区 (请粘贴在下方)   -->
@@ -831,6 +831,7 @@
 </script>
 </body>
 </html>
+
 
 
 
